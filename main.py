@@ -1,3 +1,5 @@
+import json
+
 class Player():
     def __init__(self, energy, health, fat, upper, lower, cardio):
         self.energy = energy
@@ -7,6 +9,39 @@ class Player():
         self.lower = lower
         self.cardio = cardio
 
+    def save(self, file_name = "savefile.json"):
+        data = {
+            "energy": self.energy,
+            "health": self.health,
+            "fat": self.fat,
+            "upper": self.upper,
+            "lower": self.lower,
+            "cardio": self.cardio
+        }
+
+        with open(file_name, 'w') as f:
+            json.dump(data, f)
+        print("Game Saved")
+
+    @classmethod
+    def load(cls, file_name = "savefile.json"):
+        try:
+            with open(file_name, 'r') as f:
+                data = json.load(f)
+
+            print("Game loaded")
+            return cls(
+                data["energy"],
+                data["health"],
+                data["fat"],
+                data["upper"],
+                data["lower"],
+                data["cardio"]
+            )
+        except FileNotFoundError:
+            print("No save file found")
+            return None
+        
     def clamp(self):
         self.energy = max(0, min(self.energy, 100))
         self.fat = max(0, min(self.fat, 100))
@@ -25,6 +60,7 @@ class Player():
     
 
     def workout(self):
+        self.clamp()
         print("1.- Upper Body")
         print("2.- Lower Body")
         print("3.- Cardio")
@@ -51,9 +87,10 @@ class Player():
             print(self.get_status())
         else:
             print("You didnt pick anything, douchbag")
-        self.clamp()
+        
     
     def get_food(self):
+        self.clamp()
         print("Would you prefer: ")
         print("1.- Healthy Snack")
         print("2.- Bulky Snack")
@@ -75,9 +112,8 @@ class Player():
         else:
             print("didnt pick anything,douchbag.")
         
-        self.clamp()
         print("Had a feast, new stats are: ")
-        print(self.get_status())
+        self.get_status()
 
 
 a1 = Player(100, 100, 20, 0, 0, 0)
@@ -98,10 +134,13 @@ while True:
         print("You have reached your upper goal")
 
 
-    print("1.- workout.")
-    print("2.- Eat.")
-    print("3.- Status.")
-    print("4.- Exit.")
+    print("\n--- MENU ---")
+    print("1.- Workout")
+    print("2.- Eat")
+    print("3.- Status")
+    print("4.- Save Game")
+    print("5.- Load Game")
+    print("6.- Exit")
     decision = int(input("What would you like to do: "))
 
     if decision == 1:
@@ -111,9 +150,16 @@ while True:
     elif decision == 3:
         a1.get_status()
     elif decision == 4:
+        a1.save()
+    elif decision == 5:
+        loaded = Player.load()
+        if loaded:
+            a1 = loaded
+    elif decision == 6:
         print("Goodbye, quitter")
         print("Final Status: ")
         a1.get_status()
         break
+
     else:
         print("Didnt pick anything")
