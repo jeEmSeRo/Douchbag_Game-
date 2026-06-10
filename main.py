@@ -45,6 +45,11 @@ class Player():
             print("No save file found")
             return None
         
+    def del_data_saved(self):
+        pass
+
+
+    
     def clamp(self):
         self.energy = max(0, min(self.energy, 100))
         self.fat = max(0, min(self.fat, 100))
