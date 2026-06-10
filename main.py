@@ -9,7 +9,9 @@ class Player():
         self.lower = lower
         self.cardio = cardio
 
-    def save(self, file_name = "savefile.json"):
+    def save(self, slot):
+
+        filename = f"save{slot}.json"
         data = {
             "energy": self.energy,
             "health": self.health,
@@ -19,14 +21,15 @@ class Player():
             "cardio": self.cardio
         }
 
-        with open(file_name, 'w') as f:
+        with open(filename, 'w') as f:
             json.dump(data, f)
         print("Game Saved")
 
     @classmethod
-    def load(cls, file_name = "savefile.json"):
+    def load(cls, slot):
+        filename = f"save{slot}.json"
         try:
-            with open(file_name, 'r') as f:
+            with open(filename, 'r') as f:
                 data = json.load(f)
 
             print("Game loaded")
@@ -115,6 +118,10 @@ class Player():
         print("Had a feast, new stats are: ")
         self.get_status()
 
+    #def __str__(self):
+
+        
+
 
 a1 = Player(100, 100, 20, 0, 0, 0)
 
@@ -150,9 +157,11 @@ while True:
     elif decision == 3:
         a1.get_status()
     elif decision == 4:
-        a1.save()
+        slot = int(input("Which slot (1-3) do you want to save to: "))
+        a1.save(slot)
     elif decision == 5:
-        loaded = Player.load()
+        slot = int(input("Which slot (1-3) do you want to laod to: "))
+        loaded = Player.load(slot)
         if loaded:
             a1 = loaded
     elif decision == 6:
